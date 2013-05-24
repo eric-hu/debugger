@@ -112,6 +112,8 @@ Please report them [on github](http://github.com/cldwalker/debugger/issues).
 [See here](http://tagaholic.me/contributing.html) for contribution policies.
 Let's keep this working for the ruby community!
 
+* After forking the repo, run `rake compile` before running `rake test`.
+
 ## Related projects
 
 * [debugger-completion](https://github.com/cldwalker/debugger-completion) - autocompletion for
