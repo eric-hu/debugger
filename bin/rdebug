@@ -164,21 +164,21 @@ begin
 rescue
 end
 
-option_parser, options = RdebugOptionParser.begin
+if not defined? Debugger::ARGV
+  Debugger::ARGV = ARGV.clone
+end
+rdebug_path = File.expand_path($0)
+if RUBY_PLATFORM =~ /mswin/
+  rdebug_path += '.cmd' unless rdebug_path =~ /\.cmd$/i
+end
+Debugger::RDEBUG_SCRIPT = rdebug_path
+Debugger::RDEBUG_FILE = __FILE__
+Debugger::INITIAL_DIR = Dir.pwd
+
 begin
-  if not defined? Debugger::ARGV
-    Debugger::ARGV = ARGV.clone
-  end
-  rdebug_path = File.expand_path($0)
-  if RUBY_PLATFORM =~ /mswin/
-    rdebug_path += '.cmd' unless rdebug_path =~ /\.cmd$/i
-  end
-  Debugger::RDEBUG_SCRIPT = rdebug_path
-  Debugger::RDEBUG_FILE = __FILE__
-  Debugger::INITIAL_DIR = Dir.pwd
-  option_parser.parse! ARGV
+  options = RdebugOptionParser.instance.parse ARGV
 rescue StandardError => e
-  puts option_parser
+  puts RdebugOptionParser.instance
   puts
   puts e.message
   exit(-1)
@@ -190,7 +190,7 @@ else
   if ARGV.empty?
     exit if $VERBOSE and not options.verbose_long
     # Print the possible options and exit
-    puts option_parser
+    puts RdebugOptionParser.instance
     puts
     puts 'Must specify a script to run'
     exit(-1)
