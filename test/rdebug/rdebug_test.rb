@@ -8,21 +8,47 @@ describe "rdebug" do
     output.must_include "Usage: rdebug [options] <script.rb> -- <script.rb parameters>"
   end
 
-  # This test is commented as it currently appears that calling rdebug
-  # with the annotate option has the same output as without the annotate
-  # option.
   # rdebug should output gdb style annotations, which are documented here:
   #   http://www.sourceware.org/gdb/onlinedocs/annotate.html#Annotations-Overview
-  #it "annotates the output when called with -A 2" do
-    # output = call_rdebug "--annotate=2"
-    #
-    # output.must_include ""
-  #end
+  it "annotates the output when called with the annotate flag" do
+     output = call_rdebug "--annotate=3"
+     # \032 is the same character as ctrl-Z
+     output.must_include "\032"
+  end
 
   it "requires a file when called with the require flag" do
     output = call_rdebug "--require=./test/rdebug/simple_class.rb", "p defined?(SimpleClass)"
 
     output.must_include "constant"
+  end
+
+  it "supports server and client modes" do
+    OUTPUT_FILENAME = 'rdebug_test_output'
+    #output_file = File.open OUTPUT_FILENAME, 'w'
+    #spawn "bin/rdebug --server --wait test/rdebug/simple_loop.rb", :out => [OUTPUT_FILENAME, 'w']
+    spawn "bin/rdebug --server --wait test/rdebug/simple_loop.rb > #{OUTPUT_FILENAME}" #, :out => output_file
+
+    # Repeat client connection attempts until successful.  This is hacky, so
+    # please fix this if there's a better way to determine when the rdebug
+    # server has started.
+    #
+    client_output = ''
+    while !defined?(client_output) || client_output.empty?
+      client_output = call_rdebug "--client"
+    end
+
+    #server_output = read_pipe.each_line.reduce {|accum, line| accum += line.to_s}
+    file = File.open OUTPUT_FILENAME, 'r'
+    server_output = file.read
+
+    server_output.must_include "Starting simple loop"
+    client_output.must_include "Connected."
+
+    #puts "client output: \n#{client_output}"
+    # cleanup
+    File.delete OUTPUT_FILENAME
+    client_output = ''
+
   end
 
   private
