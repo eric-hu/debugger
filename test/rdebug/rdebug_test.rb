@@ -51,6 +51,11 @@ describe "rdebug" do
 
   end
 
+  it "should set DEBUG global variable in debugger mode" do
+    output = call_rdebug "--debug", "p $DEBUG"
+    output.must_include "true"
+  end
+
   private
   # Private: call rdebug on a test script and then pass the given string as
   # standard input
@@ -67,6 +72,8 @@ describe "rdebug" do
   #
   # Returns a string of all text that would be normally sent to standard output
   def call_rdebug arguments, std_input=""
-    `printf "#{std_input}\nc\n" - | bin/rdebug #{arguments} test/rdebug/simple_loop.rb`
+    # Use single quotes when passing arguments to printf so that bash doesn't
+    # evaluate global variables like $DEBUG
+    `printf '#{std_input}\nc\n' - | bin/rdebug #{arguments} test/rdebug/simple_loop.rb`
   end
 end
