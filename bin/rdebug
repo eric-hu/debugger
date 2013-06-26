@@ -25,7 +25,7 @@
 #    <tt>--cport</tt> options
 #
 #<tt>--cport=</tt><i>port</i>::
-#    Use port <i>port</i> for access to debugger control.
+#    Use port <i>port</i> for access to debugger control.  Default 8990
 #
 #<tt>-d | --debug</tt>::
 #    Set $DEBUG true.
@@ -55,7 +55,7 @@
 #      Do not stop when script is loaded.
 #
 #<tt>-p | --port=PORT</tt>::
-#      Host name used for remote debugging.
+#      Host name used for remote debugging.  Default 8989
 #
 #<tt>-r | --require</tt><i>script</i>::
 #      Require the library, before executing your script.
@@ -178,7 +178,7 @@ EOB
     opts.on("-c", "--client", "Connect to remote debugger") do
       options.client = true
     end
-    opts.on("--cport PORT", Integer, "Port used for control commands") do
+    opts.on("--cport PORT", Integer, "Port used for control commands.  Default 8990") do
       |cport|
       options.cport = cport
     end
@@ -218,7 +218,7 @@ EOB
     opts.on('-nx', 'Not run debugger initialization files (e.g. .rdebugrc') do
       options.nx = true
     end
-    opts.on('-p', '--port PORT', Integer, 'Port used for remote debugging') do
+    opts.on('-p', '--port PORT', Integer, 'Port used for remote debugging.  Default 8989') do
       |port|
       options.port = port
     end
