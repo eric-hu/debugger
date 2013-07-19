@@ -1,3 +1,4 @@
+# Execute this test suite with "bundle exec ruby test/rdebug/rdebug_test_slow"
 require_relative '../test_helper'
 require 'minitest/autorun'
 

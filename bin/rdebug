@@ -105,7 +105,7 @@
 require 'optparse'
 require 'ostruct'
 require 'debugger'
-require 'rdebug_option_parser'
+require 'debugger/runner/rdebug_option_parser'
 
 def debug_program(options)
   # Make sure Ruby script syntax checks okay.
