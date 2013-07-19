@@ -1,4 +1,5 @@
 require_relative '../test_helper'
+require 'minitest/autorun'
 
 describe "rdebug" do
 
