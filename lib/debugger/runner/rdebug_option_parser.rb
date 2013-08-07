@@ -3,26 +3,26 @@ require 'ostruct'
 
 class RdebugOptionParser
   class<<self
-    options = OpenStruct.new(
-      'annotate'           => Debugger.annotate,
-      'client'             => false,
-      'control'            => true,
-      'cport'              => Debugger::PORT + 1,
-      'host'               => nil,
-      'quit'               => true,
-      'no_rewrite_program' => false,
-      'stop'               => true,
-      'nx'                 => false,
-      'port'               => Debugger::PORT,
-      'restart_script'     => nil,
-      'script'             => nil,
-      'server'             => false,
-      'tracing'            => false,
-      'verbose_long'       => false,
-      'wait'               => false
-    )
-
     def begin
+      options = OpenStruct.new(
+        'annotate'           => Debugger.annotate,
+        'client'             => false,
+        'control'            => true,
+        'cport'              => Debugger::PORT + 1,
+        'host'               => nil,
+        'quit'               => true,
+        'no_rewrite_program' => false,
+        'stop'               => true,
+        'nx'                 => false,
+        'port'               => Debugger::PORT,
+        'restart_script'     => nil,
+        'script'             => nil,
+        'server'             => false,
+        'tracing'            => false,
+        'verbose_long'       => false,
+        'wait'               => false
+      )
+
       process_options(options)
     end
 
@@ -139,7 +139,7 @@ EOB
           $VERBOSE = true
         end
       end
-      return opts
+      return [opts, options]
     end
   end
 end

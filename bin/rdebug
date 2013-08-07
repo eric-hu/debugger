@@ -164,7 +164,7 @@ begin
 rescue
 end
 
-opts = process_options(options)
+opts, options = RdebugOptionParser.begin
 begin
   if not defined? Debugger::ARGV
     Debugger::ARGV = ARGV.clone
