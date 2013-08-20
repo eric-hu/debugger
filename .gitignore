@@ -14,3 +14,7 @@ ext/ruby_debug/ruby_debug.c
 ext/ruby_debug/ruby_debug.h
 
 Gemfile.lock
+
+.ruby-version
+.ruby-gemset
+
