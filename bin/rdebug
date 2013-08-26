@@ -105,7 +105,7 @@
 require 'optparse'
 require 'ostruct'
 require 'debugger'
-require 'debugger/runner/rdebug_option_parser'
+require_relative '../lib/debugger/runner/rdebug_option_parser'
 
 def debug_program(options)
   # Make sure Ruby script syntax checks okay.
@@ -189,6 +189,7 @@ if options.client
 else
   if ARGV.empty?
     exit if $VERBOSE and not options.verbose_long
+    # Print the possible options and exit
     puts option_parser
     puts
     puts 'Must specify a script to run'
