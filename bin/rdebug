@@ -178,7 +178,7 @@ Debugger::INITIAL_DIR = Dir.pwd
 begin
   options = RdebugOptionParser.instance.parse ARGV
 rescue StandardError => e
-  puts option_parser
+  puts RdebugOptionParser.instance
   puts
   puts e.message
   exit(-1)
