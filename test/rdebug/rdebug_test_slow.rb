@@ -1,4 +1,9 @@
-# Execute this test suite with "bundle exec ruby test/rdebug/rdebug_test_slow"
+# A handful of behavior tests for rdebug.  This one file takes about twice as
+# long to run as the rest of the test suite, so it isn't included in the 'rake
+# test' autorunner by default.
+#
+# Execute with:
+#   bundle exec ruby test/rdebug/rdebug_test_slow
 require_relative '../test_helper'
 require 'minitest/autorun'
 
