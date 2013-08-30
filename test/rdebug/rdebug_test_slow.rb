@@ -10,7 +10,7 @@ require 'minitest/autorun'
 describe "rdebug" do
 
   it "outputs the command line options when run without arguments" do
-    output = `bin/rdebug`
+    output = `#{rdebug_file_path}`
 
     output.must_include "Usage: rdebug [options] <script.rb> -- <script.rb parameters>"
   end
@@ -24,38 +24,30 @@ describe "rdebug" do
   end
 
   it "requires a file when called with the require flag" do
-    output = call_rdebug "--require=./test/rdebug/simple_class.rb", "p defined?(SimpleClass)"
+    output = call_rdebug "--require=#{current_dir}/simple_class.rb", "p defined?(SimpleClass)"
 
     output.must_include "constant"
   end
 
   it "supports server and client modes" do
     OUTPUT_FILENAME = 'rdebug_test_output'
-    #output_file = File.open OUTPUT_FILENAME, 'w'
-    #spawn "bin/rdebug --server --wait test/rdebug/simple_loop.rb", :out => [OUTPUT_FILENAME, 'w']
-    spawn "bin/rdebug --server --wait test/rdebug/simple_loop.rb > #{OUTPUT_FILENAME}" #, :out => output_file
+    thread = Thread.new {`#{rdebug_file_path} --server --wait #{current_dir}/simple_loop.rb > #{OUTPUT_FILENAME}`}
 
-    # Repeat client connection attempts until successful.  This is hacky, so
-    # please fix this if there's a better way to determine when the rdebug
-    # server has started.
-    #
-    client_output = ''
-    while !defined?(client_output) || client_output.empty?
-      client_output = call_rdebug "--client"
-    end
+    # Wait for the server thread to finish initializing
+    sleep(0.05) while thread.status == 'run'
 
-    #server_output = read_pipe.each_line.reduce {|accum, line| accum += line.to_s}
+    client_output = call_rdebug "--client"
+
     file = File.open OUTPUT_FILENAME, 'r'
     server_output = file.read
 
     server_output.must_include "Starting simple loop"
     client_output.must_include "Connected."
 
-    #puts "client output: \n#{client_output}"
     # cleanup
     File.delete OUTPUT_FILENAME
     client_output = ''
-
+    thread.kill
   end
 
   it "should set DEBUG global variable in debugger mode" do
@@ -81,6 +73,14 @@ describe "rdebug" do
   def call_rdebug arguments, std_input=""
     # Use single quotes when passing arguments to printf so that bash doesn't
     # evaluate global variables like $DEBUG
-    `printf '#{std_input}\nc\n' - | bin/rdebug #{arguments} test/rdebug/simple_loop.rb`
+    `printf '#{std_input}\nc\n' - | #{rdebug_file_path} #{arguments} #{current_dir}/simple_loop.rb`
+  end
+
+  def rdebug_file_path
+    File.expand_path('../../bin/rdebug', File.dirname(__FILE__))
+  end
+
+  def current_dir
+    File.expand_path(File.dirname(__FILE__))
   end
 end
