@@ -45,4 +45,35 @@ describe RdebugOptionParser do
 
     out.must_include Debugger::VERSION
   end
+
+  it "to_s returns the command line options when run without arguments" do
+    output = RdebugOptionParser.instance.to_s
+
+    output.must_include "Usage:"
+    output.must_include "[options] <script.rb> -- <script.rb parameters>"
+    output.must_include "-A, --annotate LEVEL             Set annotation level"
+  end
+
+  describe "annotation arguments" do
+    it "parses the long form" do
+      new_annotate_level = Debugger.annotate + 1
+      call_rdebug_parse_with_arguments ["--annotate=#{new_annotate_level}"]
+      Debugger.annotate.must_equal new_annotate_level
+    end
+
+    it "parses the short form" do
+      new_annotate_level = Debugger.annotate + 1
+      call_rdebug_parse_with_arguments ["-A", new_annotate_level.to_s]
+      Debugger.annotate.must_equal new_annotate_level
+    end
+  end
+
+  private
+  def call_rdebug_parse_with_arguments arguments
+    begin
+      RdebugOptionParser.instance.parse arguments
+    # RdebugOptionParser catches all StandardErrors and calls exit(-1)
+    rescue SystemExit
+    end
+  end
 end

@@ -8,13 +8,6 @@ require_relative '../test_helper'
 require 'minitest/autorun'
 
 describe "rdebug" do
-
-  it "outputs the command line options when run without arguments" do
-    output = `#{rdebug_file_path}`
-
-    output.must_include "Usage: rdebug [options] <script.rb> -- <script.rb parameters>"
-  end
-
   # rdebug should output gdb style annotations, which are documented here:
   #   http://www.sourceware.org/gdb/onlinedocs/annotate.html#Annotations-Overview
   it "annotates the output when called with the annotate flag" do
