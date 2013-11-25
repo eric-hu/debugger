@@ -1,6 +1,7 @@
 require_relative '../test_helper'
 require_relative '../../lib/debugger/runner/rdebug_option_parser'
 require 'minitest/autorun'
+require 'mocha/setup'
 
 describe RdebugOptionParser do
   it "returns an option summary" do
@@ -38,9 +39,9 @@ describe RdebugOptionParser do
 
   it 'supports a version option' do
     out, err = capture_io do
-      assert_raises(SystemExit) {
+      assert_raises(SystemExit) do
           RdebugOptionParser.instance.parse ['--version']
-      }
+      end
     end
 
     out.must_include Debugger::VERSION
@@ -56,15 +57,77 @@ describe RdebugOptionParser do
 
   describe "annotation arguments" do
     it "parses the long form" do
-      new_annotate_level = Debugger.annotate + 1
-      call_rdebug_parse_with_arguments ["--annotate=#{new_annotate_level}"]
-      Debugger.annotate.must_equal new_annotate_level
+      Debugger.expects(:annotate=).with(3)
+      call_rdebug_parse_with_arguments ["--annotate=3"]
     end
 
     it "parses the short form" do
-      new_annotate_level = Debugger.annotate + 1
-      call_rdebug_parse_with_arguments ["-A", new_annotate_level.to_s]
-      Debugger.annotate.must_equal new_annotate_level
+      Debugger.expects(:annotate=).with(3)
+      call_rdebug_parse_with_arguments ["-A", "3"]
+    end
+  end
+
+  describe "require arguments" do
+    it "parses the long form" do
+      RdebugOptionParser.instance.expects(:require).with('foo').returns(true)
+      call_rdebug_parse_with_arguments ["--require=foo"]
+    end
+
+    it "parses the short form" do
+      RdebugOptionParser.instance.expects(:require).with('foo').returns(true)
+      call_rdebug_parse_with_arguments ["-r", "foo"]
+    end
+  end
+
+  describe "client mode arguments" do
+    it "parses the long form" do
+      result = call_rdebug_parse_with_arguments ["--client"]
+      result.client.must_equal true
+    end
+
+    it "parses the short form" do
+      result = call_rdebug_parse_with_arguments ["-c"]
+      result.client.must_equal true
+    end
+  end
+
+  describe "server mode arguments" do
+    it "parses the long form" do
+      result = call_rdebug_parse_with_arguments ["--server"]
+      result.server.must_equal true
+    end
+
+    it "parses the short form" do
+      result = call_rdebug_parse_with_arguments ["-s"]
+      result.server.must_equal true
+    end
+  end
+
+  describe "wait mode arguments" do
+    it "parses the long form" do
+      result = call_rdebug_parse_with_arguments ["--wait"]
+      result.wait.must_equal true
+    end
+
+    it "parses the short form" do
+      result = call_rdebug_parse_with_arguments ["-w"]
+      result.wait.must_equal true
+    end
+  end
+
+  describe "debug arguments" do
+    before { @old_debug_setting = $DEBUG }
+    after { $DEBUG = @old_debug_setting }
+    it "parses the long form" do
+      $DEBUG = false
+      call_rdebug_parse_with_arguments ["--debug"]
+      $DEBUG.must_equal true
+    end
+
+    it "parses the short form" do
+      $DEBUG = false
+      call_rdebug_parse_with_arguments ["-d"]
+      $DEBUG.must_equal true
     end
   end
 
