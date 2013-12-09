@@ -26,5 +26,6 @@ handling, bindings for stack frames among other things.
   s.add_development_dependency 'rake-compiler', '~> 0.8.0'
   s.add_development_dependency 'minitest', '~> 2.12.1'
   s.add_development_dependency 'mocha', '~> 0.13.0'
+  s.add_development_dependency 'guard-minitest'
   s.license = "BSD"
 end
