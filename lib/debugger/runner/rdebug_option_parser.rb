@@ -39,9 +39,9 @@ Usage: #{program} [options] <script.rb> -- <script.rb parameters>
 EOB
       parser.separator ""
       parser.separator "Options:"
-      parser.on("-A", "--annotate LEVEL", Integer, "Set annotation level") do
-        |annotate|
-          Debugger.annotate = annotate
+      parser.on("-A", "--annotate LEVEL", Integer,
+                "Set annotation level") do |annotate|
+        Debugger.annotate = annotate
       end
       parser.on("-c", "--client", "Connect to remote debugger") do
         @options.client = true
